@@ -1,0 +1,37 @@
+# Byte-compiled / Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.Python
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing & logs
+.pytest_cache/
+.mypy_cache/
+*.log
+nul
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Secrets & local overrides
+.env
+.env.*
+.streamlit/secrets.toml
+
+# SQLite transient journal / WAL sidecars & test DBs (keep seeded uac_analytics.db)
+*.db-wal
+*.db-shm
+*.db-journal
+tests/*.db
+ml/saved_models/test_*.joblib
+

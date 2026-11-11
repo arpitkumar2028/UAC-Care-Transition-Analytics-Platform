@@ -1,0 +1,98 @@
+# ==============================================================================
+# PRODUCTION DOCKER COMPOSE ORCHESTRATION
+# Services:
+#   1. db       : PostgreSQL 15 Alpine with automatic DDL initialization
+#   2. backend  : FastAPI REST API on port 8000 (auto-seeds empty Postgres DB)
+#   3. frontend : Streamlit Executive Command Center on port 8501
+# ==============================================================================
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: uac-postgres-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-uac_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-uac_secure_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-uac_analytics}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+    networks:
+      - uac_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-uac_admin} -d ${POSTGRES_DB:-uac_analytics}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: uac-fastapi-backend
+    restart: unless-stopped
+    command: ["sh", "-c", "python db/init_db.py --if-empty && uvicorn backend.main:app --host 0.0.0.0 --port 8000 --workers 2"]
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-uac_admin}:${POSTGRES_PASSWORD:-uac_secure_pass}@db:5432/${POSTGRES_DB:-uac_analytics}
+      SQLITE_DB_PATH: /app/data/uac_analytics.db
+      PYTHONPATH: /app
+    volumes:
+      - sqlite_fallback_data:/app/data
+      - ./ml/saved_models:/app/ml/saved_models
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - uac_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 25s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: uac-streamlit-frontend
+    restart: unless-stopped
+    command: ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true"]
+    ports:
+      - "8501:8501"
+    environment:
+      BACKEND_API_URL: http://backend:8000
+      DATABASE_URL: postgresql://${POSTGRES_USER:-uac_admin}:${POSTGRES_PASSWORD:-uac_secure_pass}@db:5432/${POSTGRES_DB:-uac_analytics}
+      SQLITE_DB_PATH: /app/data/uac_analytics.db
+      PYTHONPATH: /app
+    volumes:
+      - ./ml/saved_models:/app/ml/saved_models
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - uac_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  postgres_data:
+    driver: local
+  sqlite_fallback_data:
+    driver: local
+
+networks:
+  uac_network:
+    driver: bridge
