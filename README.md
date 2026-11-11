@@ -40,15 +40,15 @@ By analyzing the speed, continuity, and reliability of care transitions, the pla
 4. **📅 Temporal & Weekend Latency Analysis**: Day-of-week velocity breakdown and two-sample Welch's $t$-tests demonstrating statistically significant weekend discharge decelerations ($-44.3\%$, $p < 10^{-27}$).
 5. **🤖 Local Operational AI Copilot (`care_pipeline/ai_copilot.py`)**: 100% free, deterministic rule-backed operational intelligence. Evaluates bottlenecks, provides diagnostic briefings, and answers caseworker queries with zero paid API costs.
 6. **📈 Machine Learning Forecasting & "What-If" Stress Lab**: Supervised 14-day Gradient Boosting & Random Forest forward projections combined with an interactive policy surge simulator.
-7. **📋 Sponsor Vetting Kanban Tracker (`care_pipeline/kanban_module.py`)**: Caseworker workflow board tracking individual children across *Vetting Queue*, *Home Study Pending*, and *Ready for Discharge*, with automated aging warnings for cases $> 30$ days.
-8. **🔔 Fail-Safe Webhook Dispatcher (`care_pipeline/alerts_dispatcher.py`)**: Dispatches instant threshold breach notifications to Slack, Discord, or HTTP sinks with non-blocking error handling.
-9. **📥 Executive PDF Brief Generator (`care_pipeline/report_generator.py`)**: One-click in-memory ReportLab PDF generator compiling executive audit findings, KPI scorecards, and predictive tables.
-10. **🌐 Production FastAPI REST Backend (`backend/main.py`)**: High-performance asynchronous REST endpoints for scorecards, date-filtered time series, anomaly logs, and policy stress simulations with CORS and Pydantic validation.
-11. **🗄️ Relational Database & Synthetic Engine (`db/` & `utils/`)**: ACID-compliant SQLite/PostgreSQL schema supporting 3-year time-series metrics (`daily_pipeline_metrics`) and 27,000+ micro case-level event records (`case_level_events`).
+7. **Sponsor Vetting Kanban Tracker (`care_pipeline/kanban_module.py`)**: Caseworker workflow board tracking individual children across *Vetting Queue*, *Home Study Pending*, and *Ready for Discharge*, with automated aging warnings for cases $> 30$ days.
+8. **Fail-Safe Webhook Dispatcher (`care_pipeline/alerts_dispatcher.py`)**: Dispatches instant threshold breach notifications to Slack, Discord, or HTTP sinks with non-blocking error handling.
+9. **Executive PDF Brief Generator (`care_pipeline/report_generator.py`)**: One-click in-memory ReportLab PDF generator compiling executive audit findings, KPI scorecards, and predictive tables.
+10. **Production FastAPI REST Backend (`backend/main.py`)**: High-performance asynchronous REST endpoints for scorecards, date-filtered time series, anomaly logs, and policy stress simulations with CORS and Pydantic validation.
+11. **Relational Database & Synthetic Engine (`db/` & `utils/`)**: ACID-compliant SQLite/PostgreSQL schema supporting 3-year time-series metrics (`daily_pipeline_metrics`) and 27,000+ micro case-level event records (`case_level_events`).
 
 ---
 
-## 📐 Mathematical Formulation of Core KPIs
+## Mathematical Formulation of Core KPIs
 
 | KPI Name | Mathematical Formula | Target Benchmark | Operational Meaning |
 | :--- | :--- | :--- | :--- |
@@ -62,7 +62,7 @@ By analyzing the speed, continuity, and reliability of care transitions, the pla
 
 ---
 
-## 📂 Repository Architecture
+## Repository Architecture
 
 ```
 .
@@ -183,14 +183,14 @@ Because GitHub hosts static code and Markdown, connect this repository to a free
 
 ---
 
-## 📚 Stakeholder & Research Documentation
+## Stakeholder & Research Documentation
 
 * **[Executive Summary Briefing (`docs/executive_summary.md`)](docs/executive_summary.md)**: Government stakeholder memorandum covering statutory TVPRA mandates, empirical bottleneck findings, and 5 policy reform recommendations.
 * **[Technical Research Paper (`docs/research_paper.md`)](docs/research_paper.md)**: Full quantitative methodology, Little's Law queueing derivations, Welch's $t$-test proofs, rolling Z-score SPC equations, and ML evaluation benchmarks (`0.23%` MAPE forecaster, `0.968` ROC-AUC stagnation classifier).
 
 ---
 
-## 📊 Summary of Key Empirical Findings
+## Summary of Key Empirical Findings
 
 1. **The Weekend Administrative Latency**: Two-sample Welch's $t$-tests confirm that sponsor releases drop by **$-44.3\%$ on weekends** ($p = 1.42 \times 10^{-28}$), creating artificial Monday backlogs in border holding facilities.
 2. **Transfer Efficiency Fluctuations**: Stage 1 (CBP $\rightarrow$ HHS) transfer clearance rates vary from $0.20$ during arrival surges to $> 1.20$ during clearance phases, highlighting the need for flexible transit shelter capacity.
