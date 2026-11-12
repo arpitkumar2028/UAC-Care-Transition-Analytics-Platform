@@ -8,7 +8,9 @@ Pipeline analytics, REST API, machine learning forecasting, and interactive Stre
 [![Plotly](https://img.shields.io/badge/Plotly-7.1.0-3F4F75?style=flat&logo=plotly&logoColor=white)](https://plotly.com/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-30%2F30%20Passing-success)](run_all_tests.py)
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://uac-care-transition-analytics-platform.streamlit.app/)
+
+**Live Interactive Dashboard:** [Launch App on Streamlit Cloud](https://uac-care-transition-analytics-platform.streamlit.app/)
 
 ---
 
@@ -166,10 +168,10 @@ docker compose up --build
 GitHub serves code and Markdown, so you can connect this repository to a free host to make all six tabs interactive in a browser:
 
 1. **Streamlit Community Cloud (Recommended)**
-   * Sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub, select this repository, set branch to `main`, and set the main file to `app.py`.
+   * **Live App**: [https://uac-care-transition-analytics-platform.streamlit.app/](https://uac-care-transition-analytics-platform.streamlit.app/)
+   * To redeploy from your own fork: sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub, select the repository, set branch to `main`, and set the main file to `app.py` (Python `3.11` under Advanced settings).
    * If no external FastAPI server is configured, `app.py` automatically falls back to the bundled SQLite database (`uac_analytics.db`), local analytics modules, and `.joblib` models (retraining cleanly in-memory if needed).
    * *(Optional)* If you host `backend/main.py` separately on Render or Railway, add `BACKEND_API_URL = "https://your-api-url"` in Streamlit Cloud Secrets.
-   * Once deployed, swap the link on the Streamlit badge at the top of this file with your live `https://...streamlit.app` URL.
 2. **Hugging Face Spaces (Docker SDK)**
    * Create a Docker Space on [huggingface.co/spaces](https://huggingface.co/spaces) connected to this repository using the included `Dockerfile`.
 
