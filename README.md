@@ -1,203 +1,193 @@
 # Care Transition Efficiency & Placement Outcome Analytics
-### Enterprise Decision Support, Quantitative Analytics & REST Backend Platform for the UAC Program
+
+Pipeline analytics, REST API, machine learning forecasting, and interactive Streamlit dashboard for the U.S. HHS/ORR and CBP Unaccompanied Children (UAC) program.
 
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688?style=flat&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.35+-FF4B4B?style=flat&logo=streamlit&logoColor=white)](https://streamlit.io/)
 [![Plotly](https://img.shields.io/badge/Plotly-7.1.0-3F4F75?style=flat&logo=plotly&logoColor=white)](https://plotly.com/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/Tests-30%2F30%20Passing%20(100%25)-success)](run_all_tests.py)
-[![Zero-Cost](https://img.shields.io/badge/Cost-100%25_Free_Local-success)](README.md)
+[![Tests](https://img.shields.io/badge/Tests-30%2F30%20Passing-success)](run_all_tests.py)
 [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io)
 
 ---
 
-## 📌 Executive Summary & Strategic Reframing
+## Overview
 
-The **U.S. Department of Health and Human Services (HHS / Office of Refugee Resettlement [ORR])** and **Customs and Border Protection (CBP)** Unaccompanied Children (UAC) dataset has historically been monitored through a passive census/capacity lens. This platform **reframes the data into an active, multi-stage operational intelligence pipeline**:
+Most reporting on the HHS Office of Refugee Resettlement (ORR) and Customs and Border Protection (CBP) Unaccompanied Children dataset treats daily headcounts as static totals. That makes it hard to see where children actually wait too long—whether at the border past the TVPRA 72-hour transfer limit, or inside licensed shelters during sponsor background checks.
 
+This project models the data as a connected, two-stage operational pipeline:
+
+```text
+[Intake]                 [Stage 1]               [Stage 2]                [Outcome]
+Border Apprehensions --> CBP Custody Queue ----> HHS Shelter Care ------> Sponsor Reunification
+                         (72-hr Target)          (Vetting & Casework)
+                               |                       |
+                     Transfer Efficiency      Discharge Effectiveness
+                     Ratio (T / Q_cbp)        Index (D / Q_hhs)
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                              THE MULTI-STAGE CARE PIPELINE                             │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-     [ Intake ]               [ Stage 1 ]              [ Stage 2 ]              [ Outcome ]
-  Apprehensions  ───────►  CBP Custody Queue  ───────►  HHS/ORR Care  ───────►  Reunification
- (Border Inflow)             (72-hr Limit)          (Shelter & Case Mgt)        (Sponsors)
-                                  │                        │
-                         Transfer Efficiency      Discharge Effectiveness
-                         Ratio: T_c / Q_cbp       Ratio: D_h / C_hhs
-```
 
-By analyzing the speed, continuity, and reliability of care transitions, the platform uncovers hidden bottlenecks, quantifies weekend administrative latency, predicts shelter bed saturation, and provides child welfare caseworkers with actionable decision support.
+By tracking flow speed, day-of-week bottlenecks, dwell times, and backlog spikes across both stages, the app helps analysts and caseworkers spot delays early and test capacity changes before beds fill up.
 
 ---
 
-## 🚀 Key Enterprise Capabilities
+## What the Platform Includes
 
-1. **🌊 Multi-Stage Care Pipeline Flow**: Interactive Plotly Sankey diagram tracking aggregate custody movement from border apprehension $\rightarrow$ CBP holding $\rightarrow$ HHS shelters $\rightarrow$ safe sponsor placement.
-2. **⚡ Process Velocity & Efficiency Deep-Dive**: Dual-axis tracking of Transfer Efficiency Ratio (TER) vs. CBP custody queues and Discharge Effectiveness (DEI) vs. active shelter capacity.
-3. **⚠️ Bottleneck & Backlog Studio**: Inflow vs. Outflow divergence charts, cumulative deficit area modeling, historical stagnation crisis detection, and **rolling Z-score statistical process control anomalies** ($Z > 2.0$).
-4. **📅 Temporal & Weekend Latency Analysis**: Day-of-week velocity breakdown and two-sample Welch's $t$-tests demonstrating statistically significant weekend discharge decelerations ($-44.3\%$, $p < 10^{-27}$).
-5. **🤖 Local Operational AI Copilot (`care_pipeline/ai_copilot.py`)**: 100% free, deterministic rule-backed operational intelligence. Evaluates bottlenecks, provides diagnostic briefings, and answers caseworker queries with zero paid API costs.
-6. **📈 Machine Learning Forecasting & "What-If" Stress Lab**: Supervised 14-day Gradient Boosting & Random Forest forward projections combined with an interactive policy surge simulator.
-7. **Sponsor Vetting Kanban Tracker (`care_pipeline/kanban_module.py`)**: Caseworker workflow board tracking individual children across *Vetting Queue*, *Home Study Pending*, and *Ready for Discharge*, with automated aging warnings for cases $> 30$ days.
-8. **Fail-Safe Webhook Dispatcher (`care_pipeline/alerts_dispatcher.py`)**: Dispatches instant threshold breach notifications to Slack, Discord, or HTTP sinks with non-blocking error handling.
-9. **Executive PDF Brief Generator (`care_pipeline/report_generator.py`)**: One-click in-memory ReportLab PDF generator compiling executive audit findings, KPI scorecards, and predictive tables.
-10. **Production FastAPI REST Backend (`backend/main.py`)**: High-performance asynchronous REST endpoints for scorecards, date-filtered time series, anomaly logs, and policy stress simulations with CORS and Pydantic validation.
-11. **Relational Database & Synthetic Engine (`db/` & `utils/`)**: ACID-compliant SQLite/PostgreSQL schema supporting 3-year time-series metrics (`daily_pipeline_metrics`) and 27,000+ micro case-level event records (`case_level_events`).
+1. **Multi-Stage Flow View**: Interactive Plotly Sankey diagram verifying end-to-end child movement from border encounters through CBP holding and HHS shelters to sponsor release, paired with daily census vs. bed-capacity area charts.
+2. **Process Efficiency Tracking**: Trend views for Transfer Efficiency Ratio (TER), Discharge Effectiveness Index (DEI), Pipeline Throughput Rate (PTR), and 30-day Outcome Stability against statutory targets.
+3. **Bottleneck & Anomaly Detection**: Day-of-week by month congestion heatmaps, rolling 30-day Z-score checks ($Z > 2.0$), and sector-level delay clustering across all six border sectors.
+4. **Weekend Latency Analysis**: Day-of-week velocity charts and two-sample Welch's $t$-tests measuring how weekend administrative slowdowns create recurring Monday border backlogs.
+5. **Local Operations Copilot (`care_pipeline/ai_copilot.py`)**: Rule-based diagnostic Q&A grounded in the active dataset—no external LLM API keys or paid subscriptions needed.
+6. **ML Forecasting & Delay Risk Lab (`ml/models.py`)**: A Gradient Boosting forecaster with Fourier seasonal terms for 30- and 90-day shelter census projections, alongside a Random Forest classifier estimating whether an individual case will stay in care past 45 days.
+7. **Interactive Policy Simulator (`care_pipeline/simulation_engine.py`)**: "What-If" stress controls for border arrival surges, transfer velocity, shelter bed caps, and sponsor vetting speeds.
+8. **Sponsor Vetting Kanban Board (`care_pipeline/kanban_module.py`)**: Three-stage case tracker (*Vetting Queue*, *Home Study Pending*, *Ready for Discharge*) that flags children waiting more than 30 days.
+9. **PDF Briefings & Webhook Alerts**: One-click ReportLab executive PDF exports (`care_pipeline/report_generator.py`) and fail-safe Slack/Discord webhook alerts (`care_pipeline/alerts_dispatcher.py`).
+10. **FastAPI Backend & Dual Database (`backend/`, `db/`)**: REST endpoints under `/api/v1/*` with Pydantic schemas (and automatic Starlette/SQLite fallback), backed by SQLite (WAL mode) locally or PostgreSQL 15 in Docker.
 
 ---
 
-## Mathematical Formulation of Core KPIs
+## Core KPI Definitions
 
-| KPI Name | Mathematical Formula | Target Benchmark | Operational Meaning |
+| KPI | Formula | Target | What It Measures |
 | :--- | :--- | :--- | :--- |
-| **Transfer Efficiency Ratio ($\text{TER}_t$)** | $\frac{\text{Transfers Out of CBP}_t}{\text{CBP Custody Queue}_t}$ | $\ge 0.85$ | Clearance speed from border holding facilities into specialized HHS care (TVPRA 72-hr compliance). |
-| **Discharge Effectiveness Index ($\text{DEI}_t$)** | $\frac{\text{Discharges to Sponsors}_t}{\text{Children in HHS Care}_t} \times 100$ | $\ge 2.5\%$ | Daily sponsor reunification turnover rate relative to active shelter census. |
-| **Pipeline Throughput Rate ($\text{SPT}_t$)** | $\frac{\text{Discharges to Sponsors}_t}{\text{Border Apprehensions}_t}$ | $\ge 1.00$ | System balance indicator. $\ge 1.0$ indicates backlog clearance; $< 1.0$ signals net case accumulation. |
-| **Cumulative System Deficit ($\Sigma B_t$)** | $\sum_{\tau=1}^t (\text{Apprehensions}_\tau - \text{Discharges}_\tau)$ | $\le 0$ | Cumulative growth of children stranded in federal custody across the reporting window. |
-| **Little's Law Dwell Time ($W_t$)** | $\frac{\text{HHS Shelter Census}_t}{\text{MA}_7(\text{Discharges}_t)}$ | $30 - 35\text{ Days}$ | Instantaneous expected duration (in days) a child remains in institutional shelter care before placement. |
-| **Backlog Accumulation Rate ($\text{BAR}_{t, 7}$)** | $\sum_{\tau=t-6}^t (\text{Apprehensions}_\tau - \text{Discharges}_\tau)$ | $\le 0$ | 7-day rolling net influx into federal custody. |
-| **Backlog Anomaly Z-Score ($Z_t$)** | $\frac{\text{BAR}_{t, 7} - \mu_{30d}(\text{BAR})}{\sigma_{30d}(\text{BAR})}$ | $\le 2.0$ | Statistical process control flag indicating critical inflow/outflow congestion. |
+| **Transfer Efficiency Ratio ($\text{TER}_t$)** | $\frac{\text{Transfers Out of CBP}_t}{\text{CBP Custody Queue}_t}$ | $\ge 0.85$ | Speed of handoffs from CBP holding into HHS care (TVPRA 72-hour standard). |
+| **Discharge Effectiveness Index ($\text{DEI}_t$)** | $\frac{\text{Discharges to Sponsors}_t}{\text{Children in HHS Care}_t} \times 100$ | $\ge 2.5\%$ | Daily shelter bed turnover into sponsor placements. |
+| **Pipeline Throughput Rate ($\text{PTR}_t$)** | $\frac{\text{Discharges to Sponsors}_t}{\text{Border Apprehensions}_t}$ | $\ge 1.00$ | System clearance balance ($\ge 1.0$ shrinks backlog; $< 1.0$ builds backlog). |
+| **Cumulative Backlog ($\Sigma B_t$)** | $\sum_{\tau=1}^t (\text{Apprehensions}_\tau - \text{Discharges}_\tau)$ | $\le 0$ | Net change in children remaining in custody across the selected window. |
+| **Little's Law Dwell Time ($W_t$)** | $\frac{\text{HHS Shelter Census}_t}{\text{MA}_7(\text{Discharges}_t)}$ | $30\text{–}35\text{ days}$ | Estimated average shelter stay in days at current placement speed. |
+| **Backlog Accumulation Rate ($\text{BAR}_{t, 7}$)** | $\sum_{\tau=t-6}^t (\text{Apprehensions}_\tau - \text{Discharges}_\tau)$ | $\le 0$ | Seven-day rolling net inflow into federal custody. |
+| **Backlog Anomaly Z-Score ($Z_t$)** | $\frac{\text{BAR}_{t, 7} - \mu_{30d}(\text{BAR})}{\sigma_{30d}(\text{BAR})}$ | $\le 2.0$ | Statistical process control flag for abnormal intake/outflow congestion. |
 
 ---
 
-## Repository Architecture
+## Repository Structure
 
-```
+```text
 .
 ├── backend/
-│   ├── __init__.py             # Backend package exports
-│   ├── main.py                 # FastAPI REST API (Summary, Timeseries, Bottlenecks, Simulate)
-│   └── schemas.py              # Pydantic request and response schemas
-│
-├── core/
-│   ├── __init__.py             # Quantitative analytics package exports
-│   └── analytics.py            # Ratios (TER, DEI, PTR, BAR) & Rolling Z-Score Anomaly Detector
-│
-├── db/
-│   ├── __init__.py             # Database package exports
-│   ├── connection.py           # Thread-safe SQLite/PostgreSQL connection with WAL mode
-│   ├── models.py               # Typed dataclass schemas (DailyPipelineMetric, CaseLevelEvent)
-│   ├── schema.sql              # ANSI SQL DDL with check constraints and performance indexes
-│   └── init_db.py              # Startup initializer & CLI synthetic seeder
-│
-├── utils/
-│   ├── __init__.py             # Utility package exports
-│   └── data_generator.py       # 3-Year macro time series & micro case-level event generator
+│   ├── __init__.py
+│   ├── main.py                 # FastAPI REST API (/api/v1/summary, timeseries, bottlenecks, simulate, ml/*)
+│   └── schemas.py              # Pydantic request/response models
 │
 ├── care_pipeline/
 │   ├── __init__.py
-│   ├── data_loader.py          # Dual ingestion (SQLite DB / CSV Archive) & calendar features
-│   ├── metrics_engine.py       # Exact KPI calculations (TER, DEI, SPT, Dwell Time, Health Grade)
-│   ├── temporal_analysis.py    # Weekday vs. weekend analytics, MoM trends & stagnation detector
-│   ├── ml_forecasting.py       # Autoregressive ML models (Gradient Boosting & Random Forest)
-│   ├── simulation_engine.py    # What-If policy & bed surge simulator
-│   ├── ai_copilot.py           # 100% local rule-backed expert diagnostic AI copilot
-│   ├── alerts_dispatcher.py    # Fail-safe Webhook alert dispatcher (Slack / Discord / sinks)
-│   ├── report_generator.py     # ReportLab multi-page executive PDF report builder
-│   └── kanban_module.py        # Sponsor vetting Kanban board workflow component
+│   ├── ai_copilot.py           # Local deterministic Q&A and audit summary generator
+│   ├── alerts_dispatcher.py    # Slack / Discord / HTTP webhook alert client
+│   ├── data_loader.py          # SQLite DB & CSV archive ingestion + calendar features
+│   ├── kanban_module.py        # 3-column sponsor vetting case tracker
+│   ├── metrics_engine.py       # KPI calculations, Little's Law dwell time & health score
+│   ├── ml_forecasting.py       # 14-day autoregressive forecast preview for PDF briefs
+│   ├── report_generator.py     # ReportLab multi-page PDF exporter
+│   ├── simulation_engine.py    # Forward surge & vetting stress-test engine
+│   └── temporal_analysis.py    # Weekday vs. weekend t-tests, MoM trends & stagnation checks
+│
+├── core/
+│   ├── __init__.py
+│   └── analytics.py            # Process ratios & rolling 30-day Z-score anomaly detector
+│
+├── db/
+│   ├── __init__.py
+│   ├── connection.py           # SQLite (WAL) / PostgreSQL connection pool helper
+│   ├── init_db.py              # Schema setup and 3-year synthetic dataset seeder
+│   ├── models.py               # Typed dataclasses for macro and case-level records
+│   └── schema.sql              # ANSI SQL schema with constraints and indexes
 │
 ├── ml/
-│   ├── __init__.py             # Machine learning module exports
-│   ├── models.py               # Fourier Seasonal Forecaster (30/90d) & Delay Classifier (RF)
-│   └── saved_models/           # Joblib-serialized model weights
+│   ├── __init__.py
+│   ├── models.py               # Fourier Gradient Boosting forecaster & Random Forest delay classifier
+│   └── saved_models/           # Pre-trained joblib model artifacts
 │
 ├── docs/
-│   ├── executive_summary.md    # Executive briefing memorandum for government stakeholders
-│   └── research_paper.md       # Formal academic research paper (EDA, KPI math & ML outcomes)
+│   ├── executive_summary.md    # Policy briefing memo for government stakeholders
+│   └── research_paper.md       # Technical paper covering EDA, KPI math & ML benchmarks
 │
-├── tests/
-│   ├── test_data_layer.py      # Unit tests for schema, flow conservation & weekend seasonality
-│   ├── test_analytics.py       # Unit tests for core process ratios & Z-score anomaly detection
-│   ├── test_backend.py         # Unit tests for FastAPI REST endpoints (/summary, /timeseries, etc.)
-│   ├── test_ml.py              # Unit tests for ML surge forecaster & delay classifier
-│   ├── test_metrics.py         # Unit tests for data loader, KPI extraction & temporal analysis
-│   └── test_services.py        # Unit tests for Copilot, ML forecasting, Webhooks & PDF generator
+├── tests/                      # 6 unit & integration test suites (30 checks total)
+├── utils/
+│   ├── __init__.py
+│   └── data_generator.py       # 1,095-day macro & 27,375-case micro data generator
 │
-├── app.py                      # Master Executive Streamlit Dashboard (Warm Off-White Palette)
-├── styles.css                  # Human-crafted natural off-white & forest green CSS theme
-├── Dockerfile                  # Multi-stage secure production Docker image
-├── docker-compose.yml          # Orchestrates PostgreSQL 15, FastAPI Backend & Streamlit Frontend
-├── .dockerignore               # Build context optimization
-├── start_platform.ps1          # One-click Windows PowerShell launcher
-├── requirements.txt            # Production dependencies (FastAPI, Streamlit, Scikit-Learn, Plotly)
-├── run_all_tests.py            # Master verification runner executing all 30 tests
-└── uac_analytics.db            # Seeded SQLite fallback DB (1,095 daily metrics, 27,375 micro cases)
+├── .streamlit/config.toml      # Streamlit light theme configuration
+├── app.py                      # Main 6-tab Streamlit dashboard
+├── styles.css                  # Warm off-white & forest-green UI stylesheet
+├── Dockerfile                  # Multi-stage Docker image
+├── docker-compose.yml          # PostgreSQL 15 + FastAPI + Streamlit stack
+├── start_platform.ps1          # Windows one-click launcher
+├── requirements.txt            # Python dependencies
+├── run_all_tests.py            # Runs all 30 tests across 6 suites
+├── HHS_Unaccompanied_Children_Program.csv
+└── uac_analytics.db            # Pre-seeded SQLite database
 ```
 
 ---
 
-## 💻 Quickstart & Execution Guide
+## How to Run
 
-### Option A: Production Docker Deployment (PostgreSQL + FastAPI + Streamlit)
-Requires Docker Engine & Docker Compose:
+### Option 1: Docker Compose (PostgreSQL 15 + FastAPI + Streamlit)
+
+Requires Docker Desktop or Docker Engine:
+
 ```bash
-# Build multi-stage image and launch PostgreSQL 15, FastAPI API, and Streamlit UI
 docker compose up --build
 ```
-* **Streamlit Dashboard**: `http://localhost:8501`
-* **FastAPI REST API & Swagger Docs**: `http://localhost:8000/docs`
-* **PostgreSQL 15**: Exposed on port `5432` (schema auto-provisioned via `db/schema.sql`, auto-seeded on startup via `--if-empty`).
 
-### Option B: Local Zero-Cost Execution (SQLite + Python 3.10–3.12)
+* Streamlit Dashboard: `http://localhost:8501`
+* FastAPI Swagger Docs: `http://localhost:8000/docs`
+* PostgreSQL 15: port `5432` (automatically initialized from `db/schema.sql` and seeded on first boot via `--if-empty`)
 
-1. **Install Dependencies**
+### Option 2: Local Python Setup (SQLite, Python 3.10–3.12)
+
+1. Install packages:
    ```bash
    pip install -r requirements.txt
    ```
-2. **Initialize & Seed the Relational Database**
+2. Reset and seed the local SQLite database (optional, `uac_analytics.db` is already included):
    ```bash
-   # Provisions schema and generates 3 years of macro time-series + 27k+ micro cases
    python db/init_db.py --reset
    ```
-3. **Run the Master Automated Test Suite (30 Tests Across 6 Suites)**
+3. Run the test suite (30 tests across 6 suites):
    ```bash
    python run_all_tests.py
    ```
-4. **One-Click Windows Launch (Backend + Frontend)**
+4. Start the backend and dashboard:
    ```powershell
    .\start_platform.ps1
    ```
-   *Or start each tier manually:*
+   Or start both manually in separate terminals:
    ```bash
-   # Terminal 1: FastAPI REST Service (Swagger UI at http://127.0.0.1:8000/docs)
+   # Terminal 1: REST API
    uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
 
-   # Terminal 2: Streamlit Executive Command Center (http://localhost:8501)
+   # Terminal 2: Streamlit UI
    streamlit run app.py
    ```
 
-### Option C: Live Interactive Showcase via GitHub (Zero Cost)
+### Option 3: Host Live from GitHub (Free)
 
-Because GitHub hosts static code and Markdown, connect this repository to a free interactive runtime so recruiters and stakeholders can explore all 6 tabs in their browser:
+GitHub serves code and Markdown, so you can connect this repository to a free host to make all six tabs interactive in a browser:
 
-1. **Streamlit Community Cloud (Recommended — 1-Click Live Dashboard)**
-   * Push this repository to a public GitHub repo (`.gitignore` already preserves `uac_analytics.db` and `.joblib` weights cleanly within standard GitHub file limits).
-   * Sign in at [share.streamlit.io](https://share.streamlit.io), select your GitHub repository, set the main file path to `app.py`, and click **Deploy**.
-   * `app.py` detects when no external API server is attached and automatically runs on the bundled SQLite WAL database, `Pandas`/`SciPy`/`Plotly` engines, `ReportLab` PDF builder, Kanban board, Policy Simulator, and `Scikit-Learn` models. *(Optional: deploy `backend/main.py` on Render/Railway and add `BACKEND_API_URL = "https://<your-api-url>"` under Streamlit Secrets.)*
-   * Replace the badge link at the top of `README.md` with your live `https://<your-app>.streamlit.app` URL so anyone visiting GitHub can launch the dashboard in one click.
-
-2. **Hugging Face Spaces (Docker SDK — Containerized Deployment)**
-   * Create a new Docker Space on [huggingface.co/spaces](https://huggingface.co/spaces) linked to your GitHub repo using the included multi-stage `Dockerfile`.
-
----
-
-## Stakeholder & Research Documentation
-
-* **[Executive Summary Briefing (`docs/executive_summary.md`)](docs/executive_summary.md)**: Government stakeholder memorandum covering statutory TVPRA mandates, empirical bottleneck findings, and 5 policy reform recommendations.
-* **[Technical Research Paper (`docs/research_paper.md`)](docs/research_paper.md)**: Full quantitative methodology, Little's Law queueing derivations, Welch's $t$-test proofs, rolling Z-score SPC equations, and ML evaluation benchmarks (`0.23%` MAPE forecaster, `0.968` ROC-AUC stagnation classifier).
+1. **Streamlit Community Cloud (Recommended)**
+   * Sign in at [share.streamlit.io](https://share.streamlit.io) with GitHub, select this repository, set branch to `main`, and set the main file to `app.py`.
+   * If no external FastAPI server is configured, `app.py` automatically falls back to the bundled SQLite database (`uac_analytics.db`), local analytics modules, and `.joblib` models (retraining cleanly in-memory if needed).
+   * *(Optional)* If you host `backend/main.py` separately on Render or Railway, add `BACKEND_API_URL = "https://your-api-url"` in Streamlit Cloud Secrets.
+   * Once deployed, swap the link on the Streamlit badge at the top of this file with your live `https://...streamlit.app` URL.
+2. **Hugging Face Spaces (Docker SDK)**
+   * Create a Docker Space on [huggingface.co/spaces](https://huggingface.co/spaces) connected to this repository using the included `Dockerfile`.
 
 ---
 
-## Summary of Key Empirical Findings
+## Documentation & Key Findings
 
-1. **The Weekend Administrative Latency**: Two-sample Welch's $t$-tests confirm that sponsor releases drop by **$-44.3\%$ on weekends** ($p = 1.42 \times 10^{-28}$), creating artificial Monday backlogs in border holding facilities.
-2. **Transfer Efficiency Fluctuations**: Stage 1 (CBP $\rightarrow$ HHS) transfer clearance rates vary from $0.20$ during arrival surges to $> 1.20$ during clearance phases, highlighting the need for flexible transit shelter capacity.
-3. **Little's Law Dwell Time**: Average shelter stay durations fluctuate between $25$ and $60$ days, directly governed by the proportion of Category 1 (parents) versus Category 3 (non-relatives) sponsors.
-4. **Z-Score Anomaly Early Warnings**: Monitoring rolling 7-day backlog rates with Z-scores $> 2.0$ identifies impending capacity crises up to 14 days before shelter bed saturation occurs.
+* **[Executive Summary](docs/executive_summary.md)**: Policy briefing covering TVPRA standards, stage-wise bottlenecks, and operational recommendations.
+* **[Technical Research Paper](docs/research_paper.md)**: Full breakdown of EDA, Little's Law dwell estimation, Welch's $t$-tests, rolling Z-score SPC, and ML metrics (`0.23%` in-sample MAPE forecaster, `0.968` ROC-AUC stagnation classifier).
+
+Main empirical findings from the data:
+1. **Weekend Discharge Slowdown**: Sponsor discharges drop sharply on weekends (`-44.3%` in the federal CSV archive, $p = 1.42 \times 10^{-28}$; `~48.8%` in the 3-year synthetic longitudinal database), while border arrivals stay steady—producing predictable Monday border queues.
+2. **Variable Transfer Clearance**: Stage 1 TER ranges from `0.20` during arrival waves to above `1.20` during recovery periods, underscoring the value of surge transit capacity.
+3. **Shelter Dwell Sensitivity**: Little's Law dwell estimates move between roughly `25` and `60` days depending on sponsor risk tiers and documentation completeness.
+4. **Early Congestion Warnings**: Rolling 7-day backlog Z-scores above `2.0` flag developing bottlenecks up to two weeks before shelter capacity limits are reached.
 
 ---
 
-## 🛡️ License & Academic Integrity
-Developed as part of the UnifiedMentor Operations & Data Science Analytics Initiative. Distributed under the MIT License.
+## License
+
+Developed as part of the UnifiedMentor Data Science & Analytics initiative. Released under the [MIT License](LICENSE).

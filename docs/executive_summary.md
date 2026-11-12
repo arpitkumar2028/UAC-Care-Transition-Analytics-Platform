@@ -31,11 +31,11 @@ $$\text{Apprehensions (Inflow)} \longrightarrow \text{CBP Border Queue} \xrighta
 
 | Process Performance Metric | Formula | Empirical Mean / Current | Statutory Target | Operational Status |
 | :--- | :--- | :---: | :---: | :--- |
-| **Transfer Efficiency Ratio (TER)** | $\text{Transfers Out} \div \text{CBP Custody}$ | **$0.88$** (Drops to $0.35$ in surges) | **$\ge 0.85$** | ⚠️ **Volatile under border spikes** |
-| **Discharge Effectiveness Index (DEI)** | $\text{Discharges} \div \text{HHS Care} \times 100$ | **$2.84\%$** daily bed turnover | **$2.5\% - 3.5\%$** | ✅ **Nominal on weekdays** |
-| **Pipeline Throughput Rate (PTR)** | $\text{Reunifications} \div \text{Apprehensions}$ | **$0.98$** (7-day rolling) | **$\ge 1.00$** | ⚠️ **Mild net backlog accumulation** |
-| **Little’s Law Shelter Dwell Time** | $\text{Shelter Census} \div \text{MA}_7(\text{Exits})$ | **$36.4$ Days** (Peaks at $58$d) | **$\le 30.0$ Days** | ⚠️ **Exceeds target during high risk** |
-| **Weekend Administrative Drop** | $\Delta (\text{Weekday vs. Weekend Exits})$ | **$-44.3\%$** ($p < 10^{-27}$) | **$< 10\%$ variance** | 🔴 **Critical systemic friction** |
+| **Transfer Efficiency Ratio (TER)** | $\text{Transfers Out} \div \text{CBP Custody}$ | **$0.88$** (Drops to $0.35$ in surges) | **$\ge 0.85$** | **Watch: Volatile under border spikes** |
+| **Discharge Effectiveness Index (DEI)** | $\text{Discharges} \div \text{HHS Care} \times 100$ | **$2.84\%$** daily bed turnover | **$2.5\% - 3.5\%$** | **Pass: Nominal on weekdays** |
+| **Pipeline Throughput Rate (PTR)** | $\text{Reunifications} \div \text{Apprehensions}$ | **$0.98$** (7-day rolling) | **$\ge 1.00$** | **Watch: Mild net backlog accumulation** |
+| **Little’s Law Shelter Dwell Time** | $\text{Shelter Census} \div \text{MA}_7(\text{Exits})$ | **$36.4$ Days** (Peaks at $58$d) | **$\le 30.0$ Days** | **Watch: Exceeds target during high risk** |
+| **Weekend Administrative Drop** | $\Delta (\text{Weekday vs. Weekend Exits})$ | **$-44.3\%$** ($p < 10^{-27}$) | **$< 10\%$ variance** | **Alert: Critical systemic friction** |
 
 #### Finding A: The "Weekend Administrative Drop" Causes Recurring Monday Surges
 * **Discovery**: Border apprehensions occur continuously 7 days a week, yet federal sponsor vetting, court document notarizations, and background check authorizations drop abruptly every Friday evening.
